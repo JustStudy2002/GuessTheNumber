@@ -1,3 +1,4 @@
+package GuessTheNumber;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -5,7 +6,7 @@ import javax.swing.*;
 
 public class GameGUI extends JFrame implements ActionListener{
 
-    GenerateNumber generateNumber = new GenerateNumber();
+    GenerateNumber gn = new GenerateNumber();
    
     String sbmtVal = "Submit";
     int chancesLeft = 3;
@@ -24,7 +25,7 @@ public class GameGUI extends JFrame implements ActionListener{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         //for background (Resuzable hence image and imageIcon both are used)
-        ImageIcon imgIcon = new ImageIcon("GuessTheNumber/src/resources/bg.jpg");
+        ImageIcon imgIcon = new ImageIcon("Project/src/GuessTheNumber/resources/bg.jpg");
         Image img = imgIcon.getImage();
         Image imgNew = img.getScaledInstance(700, 500, Image.SCALE_SMOOTH);
         imgIcon = new ImageIcon(imgNew);
@@ -60,7 +61,8 @@ public class GameGUI extends JFrame implements ActionListener{
                 if ((e.getKeyChar() >= '0' && e.getKeyChar() <= '9' && userInput.getText().length() < 2) || e.getKeyChar() == KeyEvent.VK_BACK_SPACE ) {
                     userInput.setEditable(true);
                     eLabel.setText("");
-                } else {
+                } 
+                else {
                     userInput.setEditable(false);
                     eLabel.setText("* Enter 1 or 2 digit numbers only");
                 }
@@ -69,10 +71,14 @@ public class GameGUI extends JFrame implements ActionListener{
                     userInput.setEditable(false);
                     eLabel.setText("Click on replay to play");
                 }
+
+                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                    play();
+                }
         
             }
-         });
-   
+        });
+
         //submit button
         sbmt = new JButton(sbmtVal);
         sbmt.setBounds(190,250, 100, 30);
@@ -97,19 +103,34 @@ public class GameGUI extends JFrame implements ActionListener{
     public void loseWindow(){
 
         String text = "";
+        int userData = Integer.parseInt(userInput.getText());
 
         if(chancesLeft > 1){
+
+            if(userData < gn.numberGenerated && (userData+10) > gn.numberGenerated){
+                text = "\nLittle low";
+            }
+            else if(userData > gn.numberGenerated && (userData-10) < gn.numberGenerated){
+                text = "\nLittle high";
+            }
+            else if(gn.numberGenerated < userData){
+                text = "\nToo high";
+            }
+            else{
+                text = "Too low";
+            }
+
             chancesLeft--;
-            text = "\nChances left: "+chancesLeft;
+            text = text + "\nChances left: "+chancesLeft;
         }
 
         else{
             sbmtVal = "Replay";
-            text = "\nNumber was: " + generateNumber.numberGenerated;
+            text = "You Lose \nNumber was: " + gn.numberGenerated;
             sbmt.setText(sbmtVal);
         }
 
-        JOptionPane.showMessageDialog(this, "You lose"+text);
+        JOptionPane.showMessageDialog(this, text);
         userInput.setText("");
 
     }
@@ -125,30 +146,35 @@ public class GameGUI extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
              
         if(e.getSource() == sbmt){
-    
-            String s = userInput.getText();
-
-            if(sbmtVal == "Submit"){
-                if(s.isEmpty()){
-                    noValueWindow();
-                }
-                else if(generateNumber.numberGenerated == Integer.parseInt(userInput.getText())){
-                    winWindow();
-                }
-                else{
-                    loseWindow();
-                }
-            }
-            else{
-                sbmtVal = "Submit";
-                sbmt.setText(sbmtVal);
-
-                chancesLeft = 3;
-                generateNumber.numberGenerated = generateNumber.randomNumber();
-
-            }
+            play();
+        
         }
     
     }
+
+    void play(){
+        String s = userInput.getText();
+
+        if(sbmtVal == "Submit"){
+            if(s.isEmpty()){
+                noValueWindow();
+            }
+            else if(gn.numberGenerated == Integer.parseInt(userInput.getText())){
+                winWindow();
+            }
+            else{
+                loseWindow();
+            }
+        }
+        else{
+            sbmtVal = "Submit";
+            sbmt.setText(sbmtVal);
+
+            chancesLeft = 3;
+            gn.numberGenerated = gn.randomNumber();
+
+        }
+    }
+
 
 }
