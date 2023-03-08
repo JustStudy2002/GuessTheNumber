@@ -16,3 +16,4 @@ Steps:
 
 ## Acknowledgements
 - Inspired by the classic "Guess the Number" game.
+- Special thanks to my friends and family who provided valuable feedback and suggestions to improve the game. Your input has helped me add new features and make the game even more enjoyable for everyone. Thank you!
